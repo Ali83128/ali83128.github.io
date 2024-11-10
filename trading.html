@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Titanium Trading Strategy</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.min.js"></script>
+    
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    @keyframes floatingCard {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+        100% { transform: translateY(0px); }
+    }
+
+    @keyframes rotatingGlow {
+        0% { 
+            background-position: 0% 0%;
+            filter: hue-rotate(0deg);
+        }
+        100% { 
+            background-position: 100% 100%;
+            filter: hue-rotate(360deg);
+        }
+    }
+
+    @keyframes neonFlicker {
+        0%, 100% { opacity: 1; }
+        41.99% { opacity: 1; }
+        42% { opacity: 0; }
+        43% { opacity: 0; }
+        43.01% { opacity: 1; }
+        47.99% { opacity: 1; }
+        48% { opacity: 0; }
+        49% { opacity: 1; }
+    }
+
+    @keyframes shimmer {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(50%); }
+    }
+
+    @keyframes gradientFlow {
+        0% { background-position: 0% center; }
+        100% { background-position: 200% center; }
+    }
+
+    @keyframes loadingPulse {
+        0%, 100% { 
+            opacity: 1;
+            text-shadow: 0 0 20px rgba(65, 105, 225, 0.8);
+        }
+        50% { 
+            opacity: 0.5;
+            text-shadow: 0 0 10px rgba(65, 105, 225, 0.4);
+        }
+    }
+
+    @keyframes cardGlow {
+        0%, 100% { opacity: 0.05; }
+        50% { opacity: 0.1; }
+    }
+
+    @keyframes iconGlow {
+        0%, 100% { 
+            filter: drop-shadow(0 0 3px currentColor);
+            opacity: 0.9;
+        }
+        50% { 
+            filter: drop-shadow(0 0 8px currentColor);
+            opacity: 1;
+        }
+    }
+
+    @keyframes warningPulse {
+        0%, 100% { opacity: 0.1; }
+        50% { opacity: 0.2; }
+    }
+	
+	
+	@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+}
+
+    body {
+        background-color: black;
+        min-height: 100vh;
+        padding: 24px;
+        color: white;
+        position: relative;
+    }
+
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: 
+            radial-gradient(circle at 20% 20%, rgba(65, 105, 225, 0.05) 0%, transparent 33%),
+            radial-gradient(circle at 80% 80%, rgba(156, 39, 176, 0.05) 0%, transparent 33%),
+            radial-gradient(circle at 50% 50%, rgba(255, 68, 68, 0.05) 0%, transparent 33%);
+        animation: rotatingGlow 20s linear infinite;
+        pointer-events: none;
+        z-index: -1;
+    }
+
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    /* Header Styles */
+    .header {
+        text-align: center;
+        padding: 20px 0;
+    }
+
+    .title {
+        font-size: 48px;
+        font-weight: bold;
+        background: linear-gradient(90deg, 
+            #ff69b4 0%, 
+            #da70d6 25%, 
+            #4169e1 50%, 
+            #1e90ff 75%
+        );
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        text-shadow: 0 0 20px rgba(65, 105, 225, 0.5);
+        animation: gradientFlow 3s linear infinite, neonFlicker 10s infinite;
+        background-size: 200% auto;
+        position: relative;
+    }
+
+    .title::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, 
+            transparent 0%, 
+            rgba(255, 255, 255, 0.2) 50%, 
+            transparent 100%);
+        animation: shimmer 3s linear infinite;
+    }
+
+    .subtitle {
+        margin-top: 16px;
+        font-size: 24px;
+        color: #4169e1;
+    }
+
+    .loading {
+        color: #4169e1;
+        animation: loadingPulse 2s infinite;
+    }
+
+    /* Grid Layout */
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+    }
+
+    /* Price Cards */
+    .price-card {
+        background: linear-gradient(135deg, #1a237e 0%, #0d47a1 100%);
+        border-radius: 16px;
+        padding: 24px;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(65, 105, 225, 0.3);
+        box-shadow: 
+            0 0 20px rgba(65, 105, 225, 0.2),
+            0 0 40px rgba(65, 105, 225, 0.1),
+            inset 0 0 20px rgba(65, 105, 225, 0.1);
+        animation: floatingCard 3s ease-in-out infinite;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .price-card:hover {
+        transform: scale(1.05) translateY(-15px) rotate(2deg);
+        box-shadow: 
+            0 0 30px rgba(65, 105, 225, 0.4),
+            0 0 60px rgba(65, 105, 225, 0.2);
+    }
+
+    .price-card::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 200%;
+        height: 100%;
+        background: linear-gradient(
+            90deg, 
+            transparent 0%, 
+            rgba(65, 105, 225, 0.1) 50%, 
+            transparent 100%
+        );
+        animation: shimmer 3s infinite;
+    }
+
+.warning-title::before,
+.warning-title::after {
+    content: "⚠️";
+}
+
+.warning-text::before,
+.warning-text::after {
+    content: "🎯";
+}	
+	
+	.price-card .price,
+.price-card .percentage,
+.rule-header,
+.timeline-header,
+.timeline-date,
+.timeline-value,
+.warning-title,
+.warning-text {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+	
+	
+	    .price {
+        font-size: 36px;
+        font-weight: bold;
+        color: #4169e1;
+        text-shadow: 0 0 10px rgba(65, 105, 225, 0.5);
+    }
+
+    .percentage {
+        font-size: 24px;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    /* Rule Cards */
+    .rule-card {
+        background: rgba(17, 25, 40, 0.95);
+        border-radius: 16px;
+        padding: 24px;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .rule-card:hover {
+        transform: scale(1.02);
+    }
+
+    .rule-card.red {
+        border: 1px solid #ff4444;
+        box-shadow: 
+            0 0 5px rgba(255, 68, 68, 0.2),
+            0 0 15px rgba(255, 68, 68, 0.2),
+            0 0 25px rgba(255, 68, 68, 0.2),
+            0 0 35px rgba(255, 68, 68, 0.2),
+            inset 0 0 15px rgba(255, 68, 68, 0.1);
+    }
+
+    .rule-card.purple {
+        border: 1px solid #9c27b0;
+        box-shadow: 
+            0 0 5px rgba(156, 39, 176, 0.2),
+            0 0 15px rgba(156, 39, 176, 0.2),
+            0 0 25px rgba(156, 39, 176, 0.2),
+            0 0 35px rgba(156, 39, 176, 0.2),
+            inset 0 0 15px rgba(156, 39, 176, 0.1);
+    }
+
+    .rule-card.blue {
+        border: 1px solid #4169e1;
+        box-shadow: 
+            0 0 5px rgba(65, 105, 225, 0.2),
+            0 0 15px rgba(65, 105, 225, 0.2),
+            0 0 25px rgba(65, 105, 225, 0.2),
+            0 0 35px rgba(65, 105, 225, 0.2),
+            inset 0 0 15px rgba(65, 105, 225, 0.1);
+    }
+
+    .rule-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 16px;
+        opacity: 0.05;
+        animation: cardGlow 2s ease-in-out infinite;
+    }
+
+    .rule-card::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+        opacity: 0;
+        transition: opacity 0.3s;
+        pointer-events: none;
+        transform: translate(-50%, -50%);
+    }
+
+    .rule-card:hover::after {
+        opacity: 1;
+    }
+
+    .rule-card.red::before { background-color: #ff4444; }
+    .rule-card.purple::before { background-color: #9c27b0; }
+    .rule-card.blue::before { background-color: #4169e1; }
+
+    .rule-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+        transition: all 0.3s ease;
+    }
+
+    .rule-header:hover {
+        letter-spacing: 1px;
+    }
+
+    .rule-card.red .rule-header { 
+        color: #ff4444;
+        text-shadow: 0 0 10px rgba(255, 68, 68, 0.5);
+    }
+    .rule-card.purple .rule-header { 
+        color: #9c27b0;
+        text-shadow: 0 0 10px rgba(156, 39, 176, 0.5);
+    }
+    .rule-card.blue .rule-header { 
+        color: #4169e1;
+        text-shadow: 0 0 10px rgba(65, 105, 225, 0.5);
+    }
+
+    .rule-list {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        list-style: none;
+    }
+
+    .rule-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: rgba(255, 255, 255, 0.7);
+        transition: all 0.3s ease;
+        padding: 8px 0;
+        cursor: pointer;
+        position: relative;
+    }
+
+    .rule-item:hover {
+        transform: translateX(10px);
+        color: white;
+    }
+
+    .rule-item i {
+        opacity: 0.9;
+        animation: iconGlow 2s infinite;
+        transition: all 0.3s ease;
+    }
+
+    .rule-item:hover i {
+        transform: scale(1.2) rotate(10deg);
+        filter: drop-shadow(0 0 10px currentColor);
+    }
+
+    .rule-card.red i { color: #ff4444; }
+    .rule-card.purple i { color: #9c27b0; }
+    .rule-card.blue i { color: #4169e1; }
+
+    /* Timeline Section */
+    .timeline-section {
+        background: rgba(17, 25, 40, 0.95);
+        border: 1px solid #4169e1;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 
+            0 0 20px rgba(65, 105, 225, 0.2),
+            inset 0 0 15px rgba(65, 105, 225, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .timeline-section:hover {
+        transform: scale(1.01);
+    }
+
+    .timeline-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #4169e1;
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 24px;
+        text-shadow: 0 0 10px rgba(65, 105, 225, 0.5);
+        transition: all 0.3s ease;
+    }
+
+    .timeline-header:hover {
+        letter-spacing: 1px;
+    }
+
+    .timeline-card {
+        background: #1a237e;
+        border-radius: 12px;
+        padding: 20px;
+        border-width: 1px;
+        border-style: solid;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .timeline-card:hover {
+        transform: scale(1.05) translateY(-5px);
+        box-shadow: 0 0 30px rgba(65, 105, 225, 0.3);
+    }
+
+    .timeline-date {
+        font-size: 20px;
+        margin-bottom: 8px;
+    }
+
+    .timeline-date.blue { 
+        color: #4169e1;
+        text-shadow: 0 0 10px rgba(65, 105, 225, 0.5);
+    }
+    .timeline-date.purple { 
+        color: #9c27b0;
+        text-shadow: 0 0 10px rgba(156, 39, 176, 0.5);
+    }
+    .timeline-date.pink { 
+        color: #ff69b4;
+        text-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+    }
+
+    .timeline-value {
+        font-size: 28px;
+        font-weight: bold;
+        color: white;
+    }
+
+    /* Warning Banner */
+    .warning-banner {
+        background: linear-gradient(135deg, #ff4444 0%, #ff8800 100%);
+        border-radius: 16px;
+        padding: 32px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 0 30px rgba(255, 68, 68, 0.3);
+        transition: all 0.3s ease;
+		    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+	
+		
+    }
+
+    .warning-banner:hover {
+        transform: scale(1.02);
+    }
+
+    .warning-banner::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.1);
+        animation: warningPulse 2s infinite;
+    }
+
+    .warning-banner::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+        opacity: 0;
+        transition: opacity 0.3s;
+        transform: translate(-50%, -50%);
+    }
+
+    .warning-banner:hover::before {
+        opacity: 1;
+    }
+
+    .warning-title {
+        font-size: 36px;
+        font-weight: bold;
+        color: white;
+        margin-bottom: 12px;
+        position: relative;
+        z-index: 1;
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+		    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    }
+
+    .warning-title:hover {
+        letter-spacing: 1px;
+    }
+
+    .warning-text {
+        font-size: 24px;
+        color: white;
+        position: relative;
+        z-index: 1;
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+		 display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap: 16px;
+    }
+
+    /* Icon Global Styles */
+    [data-lucide] {
+        transition: all 0.3s ease;
+    }
+
+    [data-lucide]:hover {
+        transform: rotate(10deg) scale(1.2);
+        filter: drop-shadow(0 0 15px currentColor);
+    }
+
+    @media (max-width: 768px) {
+        .grid {
+            grid-template-columns: 1fr;
+        }
+        
+        body {
+            padding: 16px;
+        }
+        
+        .title {
+            font-size: 36px;
+        }
+    }
+	
+	[data-emoji] {
+    font-style: normal;
+    display: inline-block;
+    animation: bounce 2s infinite;
+}
+
+	
+	
+</style>
+
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1 class="title">
+                <span>TITANIUM</span> <span>TRADING STRATEGY</span>
+            </h1>
+            <div class="subtitle">
+                Time until Phase 1 Deadline: <span class="loading" id="countdown">Loading...</span>
+            </div>
+        </div>
+
+        <!-- Price Triggers -->
+        <div class="grid">
+            <div class="price-card">
+                <div class="price">💰 $120K</div>
+                <div class="percentage">🎯 20% OUT</div>
+            </div>
+            <div class="price-card">
+                <div class="price">$140K</div>
+                <div class="percentage">🎯20% OUT</div>
+            </div>
+            <div class="price-card">
+                <div class="price">$150K</div>
+                <div class="percentage">🎯10% OUT</div>
+            </div>
+        </div>
+
+        <!-- Summer Discipline -->
+        <div class="grid">
+            <div class="rule-card red">
+                <div class="rule-header">
+                    <i data-lucide="flame"></i>
+                   
+					<div class="rule-header">
+    <i data-lucide="flame"></i>
+    🔒 JUNE-JULY LOCKDOWN
+</div>
+                </div>
+                <ul class="rule-list">
+                    <li class="rule-item"><i data-lucide="zap"></i>PUMP = TRAP</li>
+                    <li class="rule-item"><i data-lucide="zap"></i>+15% = TAKE EXTRA 10%</li>
+                    <li class="rule-item"><i data-lucide="zap"></i>NO FUCKING BUYING</li>
+                    <li class="rule-item"><i data-lucide="zap"></i>HANDS OFF KEYBOARD</li>
+                    <li class="rule-item"><i data-lucide="zap"></i>DISABLE TRADING APP</li>
+                </ul>
+            </div>
+            <div class="rule-card purple">
+                <div class="rule-header">
+                    <i data-lucide="skull"></i>
+               
+					
+					
+                </div>
+				<div class="rule-header">
+    <i data-lucide="skull"></i>
+    🌑 AUGUST BLACKOUT
+</div>
+                <ul class="rule-list">
+                    <li class="rule-item"><i data-lucide="zap"></i>DELETE TRADING APPS</li>
+                    <li class="rule-item"><i data-lucide="zap"></i>LOCK UP STABLES</li>
+                    <li class="rule-item"><i data-lucide="zap"></i>GO ON VACATION</li>
+                    <li class="rule-item"><i data-lucide="zap"></i>NO CHARTS</li>
+                    <li class="rule-item"><i data-lucide="zap"></i>NO TRADING</li>
+                </ul>
+            </div>
+            <div class="rule-card blue">
+                <div class="rule-header">
+                    <i data-lucide="rocket"></i>
+                      🚀 SEPTEMBER PREPP
+                </div>
+                <ul class="rule-list">
+                    <li class="rule-item"><i data-lucide="zap"></i>PREPARE Q4 EXITS</li>
+                    <li class="rule-item"><i data-lucide="zap"></i>SET ORDERS</li>
+                    <li class="rule-item"><i data-lucide="zap"></i>NO ENTRY</li>
+                    <li class="rule-item"><i data-lucide="zap"></i>PURE EXECUTION</li>
+                    <li class="rule-item"><i data-lucide="zap"></i>STAY STRONG</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Q4 Extraction Timeline -->
+        <div class="timeline-section">
+            <div class="timeline-header">
+                <i data-lucide="diamond"></i>
+                 💎 Q4 EXTRACTION SCHEDULE
+            </div>
+            <div class="grid">
+                <div class="timeline-card">
+                    <div class="timeline-date blue">>📅 OCT 15</div>
+                    <div class="timeline-value">💰 20% OUT</div>
+                </div>
+                <div class="timeline-card">
+                    <div class="timeline-date purple">📅 NOV 5-8</div>
+                    <div class="timeline-value">💰 10% OUT</div>
+                </div>
+                <div class="timeline-card">
+                    <div class="timeline-date pink">🌙 MOON BAG<</div>
+                    <div class="timeline-value">🚀 10% REMAINS</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Protection Rules -->
+        <div class="grid">
+            <div class="rule-card green">
+                <div class="rule-header">
+                    <i data-lucide="shield"></i>
+                    💎 EXIT MONEY RULES
+                </div>
+                <ul class="rule-list">
+                    <li class="rule-item"><i data-lucide="zap"></i>Convert to stables</li>
+                    <li class="rule-item"><i data-lucide="zap"></i>Move to cold storage</li>
+                    <li class="rule-item"><i data-lucide="zap"></i>Different exchange</li>
+                    <li class="rule-item"><i data-lucide="zap"></i>Separate account</li>
+                    <li class="rule-item"><i data-lucide="zap"></i>NO TOUCHING</li>
+                </ul>
+            </div>
+            <div class="rule-card yellow">
+                <div class="rule-header">
+                    <i data-lucide="brain"></i>
+                    🧠 PSYCHOLOGY PROTECTION
+                </div>
+                <ul class="rule-list">
+                    <li class="rule-item"><i data-lucide="zap"></i>Screenshot this plan</li>
+                    <li class="rule-item"><i data-lucide="zap"></i>Set calendar alerts</li>
+                    <li class="rule-item"><i data-lucide="zap"></i>Tell trusted friend</li>
+                    <li class="rule-item"><i data-lucide="zap"></i>Make exit contract</li>
+                    <li class="rule-item"><i data-lucide="zap"></i>Stay accountable</li>
+                </ul>
+            </div>
+            <div class="rule-card red">
+                <div class="rule-header">
+                    <i data-lucide="ban"></i>
+                    ⛔ ANTI-FOMO MEASURES
+                </div>
+                <ul class="rule-list">
+                    <li class="rule-item"><i data-lucide="zap"></i>Block crypto Twitter</li>
+                    <li class="rule-item"><i data-lucide="zap"></i>Leave Telegram groups</li>
+                    <li class="rule-item"><i data-lucide="zap"></i>Unfollow influences</li>
+                    <li class="rule-item"><i data-lucide="zap"></i>No price checking</li>
+                    <li class="rule-item"><i data-lucide="zap"></i>Pure execution</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Warning Banner -->
+        <div class="warning-banner">
+            <h2 class="warning-title">               THIS IS YOUR FUCKING MANUAL!                      </h2>
+            <p class="warning-text">            Don't change a thing - just EXECUTE! </p>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Countdown Timer
+        function updateCountdown() {
+            const now = new Date();
+            const target = new Date('2025-04-15');
+            const diff = target - now;
+            
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            
+            document.getElementById('countdown').textContent = `${days}D ${hours}H`;
+        }
+
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+
+        // Color the icons appropriately
+        document.querySelectorAll('.rule-card').forEach(card => {
+            const color = card.classList.contains('red') ? '#ff4444' : 
+                         card.classList.contains('purple') ? '#9c27b0' :
+                         card.classList.contains('blue') ? '#4169e1' :
+                         card.classList.contains('green') ? '#4caf50' :
+                         card.classList.contains('yellow') ? '#ffd700' : '#ffffff';
+            
+            card.querySelectorAll('i').forEach(icon => {
+                icon.style.color = color;
+            });
+        });
+    </script>
+</body>
+</html>
