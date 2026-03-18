@@ -1,23 +1,390 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Ali Riaz Studio — Game Developer</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ali Riaz Studio — Indie Game Developer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: Arial; background: #1a1a2e; color: white; text-align: center; padding: 50px; }
-        h1 { color: #FFD94D; font-size: 36px; }
-        p { font-size: 18px; color: #ccc; }
-        a { color: #4CC9F0; text-decoration: none; font-size: 20px; }
-        img { width: 120px; border-radius: 20px; margin: 20px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --gold: #FFD94D;
+            --gold-dark: #C8963E;
+            --bg-deep: #0a0a1a;
+            --bg-card: #12122a;
+            --text-primary: #f0f0ff;
+            --text-secondary: #8888aa;
+            --accent-red: #ff4d6d;
+            --accent-cyan: #4CC9F0;
+            --accent-purple: #8A5CFF;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--bg-deep);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        .bg-effect {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(138, 92, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(76, 201, 240, 0.06) 0%, transparent 50%),
+                radial-gradient(circle at 50% 80%, rgba(255, 77, 109, 0.05) 0%, transparent 50%);
+            z-index: 0;
+            animation: bgPulse 8s ease-in-out infinite alternate;
+        }
+
+        @keyframes bgPulse {
+            0% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 60px 0 40px;
+        }
+
+        .studio-badge {
+            display: inline-block;
+            padding: 6px 20px;
+            border: 1px solid var(--gold-dark);
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 24px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .hero h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(32px, 7vw, 56px);
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--gold) 0%, #fff 40%, var(--gold) 80%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+            margin-bottom: 16px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .hero .tagline {
+            font-size: 20px;
+            color: var(--text-secondary);
+            font-weight: 400;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero .location {
+            font-size: 14px;
+            color: var(--accent-cyan);
+            margin-top: 8px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            animation: fadeInUp 1.2s ease-out;
+        }
+
+        /* Game Card */
+        .game-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 217, 77, 0.15);
+            border-radius: 24px;
+            padding: 40px 32px;
+            margin: 48px 0;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 1.4s ease-out;
+        }
+
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-purple), var(--gold), var(--accent-red));
+        }
+
+        .game-card .live-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(74, 222, 128, 0.15);
+            color: #4ADE80;
+            padding: 4px 14px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: #4ADE80;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.3); }
+        }
+
+        .game-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 36px;
+            font-weight: 900;
+            color: var(--accent-red);
+            margin-bottom: 4px;
+        }
+
+        .game-subtitle {
+            color: var(--text-secondary);
+            font-size: 16px;
+            margin-bottom: 24px;
+        }
+
+        .game-description {
+            font-size: 17px;
+            line-height: 1.7;
+            color: var(--text-primary);
+            margin-bottom: 28px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            padding: 16px 12px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--gold);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+
+        /* Features */
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 32px;
+        }
+
+        .feature-tag {
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .feature-tag.purple { background: rgba(138, 92, 255, 0.15); color: var(--accent-purple); }
+        .feature-tag.cyan { background: rgba(76, 201, 240, 0.15); color: var(--accent-cyan); }
+        .feature-tag.red { background: rgba(255, 77, 109, 0.15); color: var(--accent-red); }
+        .feature-tag.gold { background: rgba(255, 217, 77, 0.1); color: var(--gold); }
+
+        /* CTA Button */
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 36px;
+            background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+            color: #0a0a1a;
+            text-decoration: none;
+            border-radius: 16px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 24px rgba(255, 217, 77, 0.25);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(255, 217, 77, 0.4);
+        }
+
+        .cta-button svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* Rating */
+        .rating {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .stars { color: var(--gold); font-size: 20px; }
+        .rating-text { color: var(--text-secondary); font-size: 14px; }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 48px 0 24px;
+            animation: fadeInUp 1.6s ease-out;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover { color: var(--gold); }
+
+        .footer .copyright {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Mobile */
+        @media (max-width: 480px) {
+            .container { padding: 24px 16px; }
+            .game-card { padding: 28px 20px; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
     </style>
 </head>
 <body>
-    <h1>Ali Riaz Studio</h1>
-    <p>Indie Game Developer — Lahore, Pakistan</p>
-    <br>
-    <a href="https://play.google.com/store/apps/details?id=com.alistudio.monsterkillerarena">Monstro on Google Play</a>
-    <br><br>
-    <p>Horde survival action game with 5 stages, 3 characters, boss fights, and Battle Pass!</p>
-    <br>
-    <p>Contact: islam83128@gmail.com</p>
+    <div class="bg-effect"></div>
+    
+    <div class="container">
+        <div class="hero">
+            <div class="studio-badge">INDIE STUDIO</div>
+            <h1>ALI RIAZ STUDIO</h1>
+            <p class="tagline">Crafting addictive mobile games</p>
+            <p class="location">Lahore, Pakistan</p>
+        </div>
+
+        <div class="game-card">
+            <div class="live-badge">
+                <span class="live-dot"></span>
+                LIVE ON PLAY STORE
+            </div>
+            
+            <div class="game-title">MONSTRO</div>
+            <div class="game-subtitle">Monster Survivors — Horde Defense</div>
+            
+            <p class="game-description">
+                Survive endless waves of monsters in this action-packed horde survival game! 
+                Choose your hero, unlock powerful abilities, defeat epic bosses, and push through 
+                5 unique stages. How long can you survive?
+            </p>
+
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">5</div>
+                    <div class="stat-label">Stages</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">3</div>
+                    <div class="stat-label">Heroes</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">36+</div>
+                    <div class="stat-label">Abilities</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">11</div>
+                    <div class="stat-label">Bosses</div>
+                </div>
+            </div>
+
+            <div class="features">
+                <span class="feature-tag purple">Battle Pass</span>
+                <span class="feature-tag cyan">Lucky Spin</span>
+                <span class="feature-tag red">Boss Fights</span>
+                <span class="feature-tag gold">Equipment System</span>
+                <span class="feature-tag purple">Daily Missions</span>
+                <span class="feature-tag cyan">Achievements</span>
+                <span class="feature-tag red">15 Upgrades</span>
+                <span class="feature-tag gold">Daily Login Rewards</span>
+            </div>
+
+            <div style="text-align: center;">
+                <a href="https://play.google.com/store/apps/details?id=com.alistudio.monsterkillerarena" class="cta-button" target="_blank">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3,20.5V3.5C3,2.91 3.34,2.39 3.84,2.15L13.69,12L3.84,21.85C3.34,21.61 3,21.09 3,20.5M16.81,15.12L6.05,21.34L14.54,12.85L16.81,15.12M20.16,10.81C20.5,11.08 20.75,11.5 20.75,12C20.75,12.5 20.5,12.92 20.16,13.19L17.89,14.5L15.39,12L17.89,9.5L20.16,10.81M6.05,2.66L16.81,8.88L14.54,11.15L6.05,2.66Z"/></svg>
+                    DOWNLOAD NOW
+                </a>
+                <div class="rating">
+                    <span class="stars">★★★★★</span>
+                    <span class="rating-text">4.83 on Google Play</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-links">
+                <a href="mailto:islam83128@gmail.com">Contact</a>
+                <a href="https://play.google.com/store/apps/details?id=com.alistudio.monsterkillerarena">Google Play</a>
+            </div>
+            <p class="copyright">&copy; 2026 Ali Riaz Studio. All rights reserved.</p>
+        </div>
+    </div>
 </body>
 </html>
