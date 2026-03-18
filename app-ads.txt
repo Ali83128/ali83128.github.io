@@ -1,6 +1,10 @@
 # Google AdMob (DIRECT)
 google.com, pub-4320965601704877, DIRECT, f08c47fec0942fa0
 
+# Meta Audience Network (Business ID + App ID)
+facebook.com, 1242781064502061, RESELLER, c3e20eee3f780d68
+facebook.com, 918920404353988, RESELLER, c3e20eee3f780d68
+
 # Unity Ads (DIRECT)
 unity.com, 9592181, DIRECT, 96cabb5fbdde37a7
 
